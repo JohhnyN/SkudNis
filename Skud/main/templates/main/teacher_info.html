@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center">
+<div class="card" style="width:400px">
+    <img class="card-img-top p-3" src="{{ teacher.photo.url }}" alt="teacher_photo">
+    <div class="card-body text-center">
+        <h4 class="card-title">{{ teacher.name }}</h4>
+        <hr class="mt-0 mb-4">
+        <p class="card-text">{{ teacher.job_title }}</p>
+        <hr class="mt-0 mb-4">
+        <p class="card-text">{{ teacher.phone }}</p>      
+    </div>
+</div>
+</div>
+
+{% endblock %}

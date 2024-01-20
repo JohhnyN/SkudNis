@@ -1,0 +1,48 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<form class="d-flex mb-5" role="search">
+      <input class="form-control me-1 border-primary" type="search" placeholder="Поиск" aria-label="Search">
+      <button class="btn btn-outline-primary" type="submit">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+        </svg>
+      </button>
+    </form>
+
+
+      <table class="table table-hover table-bordered">
+        <thead class="table-primary">
+          <tr>
+            <th>Кабинет</th>
+            <th>Учитель</th>
+            <th>Фото</th>
+            <th>Дата взятия</th>
+            <th>Дата возврата</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for history in historys %}
+            {% if history.returned == False %}
+              <tr class="table-danger">
+                <td>{{ history.office }}</td>            
+                <td>{{ history.teacher }}</td>
+                <td><a href="{% url 'info' history.teacher.slug %}"><img src="{{ history.teacher.photo.url }}" alt="" width="80"></a></td>
+                <td>{{ history.start_time }}</td>
+                <td></td>
+              </tr>
+            {% else %}
+              <tr>
+                <td>{{ history.office }}</td>            
+                <td>{{ history.teacher }}</td>
+                <td><a href="{% url 'info' history.teacher.slug %}"><img src="{{ history.teacher.photo.url }}" alt="" width="80"></a></td>
+                <td>{{ history.start_time }}</td>
+                <td>{{ history.end_time }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}          
+        </tbody>
+      </table>
+
+{% endblock %}

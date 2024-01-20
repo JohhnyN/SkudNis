@@ -1,0 +1,54 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<h1 class="text-center mb-5">Взять карточку</h1>
+
+{{ office }}
+{{ teacher }}
+
+<form action="{% url 'take_cards' %}" method="post">
+
+    {% csrf_token %}
+    
+    <div class="row pb-3">
+        <label for="teacher" class="col-sm-2 col-form-label">{{ form.teacher.label }}</label>
+        <div class="col-sm-10">            
+            {{ form.teacher }}
+        </div>
+    </div>
+    {% if form.teacher.errors %}
+        <div class="alert alert-danger d-flex align-items-center mt-2 text-center">
+            {{ form.teacher.errors }}
+        </div>
+    {% endif %}
+
+    <div class="row pb-3">
+        <label for="office" class="col-sm-2 col-form-label">{{ form.office.label }}</label>
+        <div class="col-sm-10">
+            {{ form.office }}
+        </div>
+    </div> 
+    {% if form.office.errors %}
+        <div class="alert alert-danger d-flex align-items-center mt-2 text-center">
+            {{ form.office.errors }}
+        </div>
+    {% endif %}
+    
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary btn-block">Взять карточку</button>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success mt-2">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+      
+</form>
+
+
+{% endblock %}
