@@ -4,49 +4,32 @@
 
 <h1 class="text-center mb-5">Вернуть карточку</h1>
 
-<form action="{% url 'return_cards' %}" method="post">
-
-    {% csrf_token %} 
-
-    <div class="row pb-3">
-        <label for="teacher" class="col-sm-2 col-form-label">{{ form.teacher.label }}</label>
-        <div class="col-sm-10">            
-            {{ form.teacher }}
-        </div>
-    </div>
-    {% if form.teacher.errors %}
-        <div class="alert alert-danger d-flex align-items-center mt-2 text-center">
-            {{ form.teacher.errors }}
-        </div>
-    {% endif %}
-
-    <div class="row pb-3">
-        <label for="office" class="col-sm-2 col-form-label">{{ form.office.label }}</label>
-        <div class="col-sm-10">
-            {{ form.office }}
-        </div>
-    </div> 
-    {% if form.office.errors %}
-        <div class="alert alert-danger d-flex align-items-center mt-2 text-center">
-            {{ form.office.errors }}
-        </div>
-    {% endif %}
-    
-
-    <div class="d-grid">
-        <button type="submit" class="btn btn-primary btn-block">Вернуть карточку</button>
-    </div>
-
-    {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-success mt-2">
-            {{ message }}
-        </div>
+<!-- Место для отображения передаваемых строковых аргументов -->
+<div class="text-center">
+    {% if my_arguments %}
+        {% for argument in my_arguments %}
+            <p>{{ argument }}</p>
         {% endfor %}
-        {% endif %}
+    {% else %}
+        <p>Нет данных для отображения.</p>
+    {% endif %}
+</div>
 
-</form>
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success mt-2">
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
 
 {% endblock %}
-            
-        
+
+{% block javascript %}
+<script>
+    function showNotification() {
+        alert('Это уведомление!');
+    }
+</script>
+{% endblock %}
+

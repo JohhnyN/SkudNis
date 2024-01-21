@@ -7,26 +7,31 @@ ports = list(serial.tools.list_ports.comports())
 for port in ports:
     if "Arduino" in port.description:
         device = port.device
-arduino = serial.Serial(device, 9600)
+try:
+    arduino = serial.Serial(device, 9600)
+    print('Ардуино подключено')
+except Exception as ex:
+    arduino = None
+    print('Ардуино не подключилось')
 
 # key_id = 25763
 # clef_id = 4294940973
 
 
 def arduino_reader():
-    teacher_key = ''
-    office_key = ''
-    while teacher_key == '' or office_key == '':
+    logged_teacher_card = ''
+    logged_office_card = ''
+    while logged_teacher_card == '' or logged_office_card == '':
         data = arduino.readline()
         line = "".join(c for c in str(data) if c.isnumeric())
         current_office = Office.objects.filter(card_number=line)
         current_teacher = Teacher.objects.filter(card_number=line)
         if current_office:
-            office_key = current_office
+            logged_office_card = line
         elif current_teacher:
-            teacher_key = current_teacher
+            logged_teacher_card = line
     try:
-        return office_key, teacher_key
+        return logged_office_card, logged_teacher_card
     except Exception as ex:
         print(ex)
 

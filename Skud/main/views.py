@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from datetime import datetime
 from .arduino_handler import arduino_reader
+import _sqlite3
 
 from .models import *
 from .forms import *
@@ -30,45 +31,59 @@ def takeCard(request):
     #
     # else:
     #     form = AddCardHistory()
-    office, teacher = arduino_reader()
-    return render(request, "main/take_card.html", {"office": office, "teacher": teacher})
+    office_card, teacher_card = arduino_reader()
+    office = Office.objects.get(card_number=office_card)
+    teacher = Teacher.objects.get(card_number=teacher_card)
+    office_name = Office.objects.filter(card_number=office_card).values('office')[0]['office']
+    teacher_name = Teacher.objects.filter(card_number=teacher_card).values('name')[0]['name']
+    new_card_history = CardHistory(office=office, teacher=teacher, 
+                                   start_time=datetime.now(), end_time=datetime.now(), returned=False)
+    new_card_history.save()
+    return render(request, "main/take_card.html", {"my_arguments": (office_name, teacher_name)})
 
 
 def returnCards(request):
-    if request.method == "POST":
-        form = ReturnCardHistory(request.POST)
+    # if request.method == "POST":
+    #     form = ReturnCardHistory(request.POST)
+    #
+    #     if form.is_valid():
+    #         # Получить данные из формы
+    #         teacher = form.cleaned_data["teacher"]
+    #         office = form.cleaned_data["office"]
+    #
+    #         # проверить, есть ли записи в таблице и выбрать последнюю
+    #         historys = CardHistory.objects.filter(
+    #             office=office, teacher=teacher, returned=False
+    #         )
+    #         history = historys.last()
+    #
+    #         if history:
+    #
+    #             # Изменить данные в найденной записи
+    #             history.end_time = datetime.now()
+    #             history.returned = True
+    #
+    #             # Сохранить изменения
+    #             Office.objects.filter(office=office).update(busy=False)
+    #             history.save()
+    #
+    #             # Вернуть успешный результат
+    #             return redirect("index")
+    #
+    #         else:
+    #             form.add_error("office", "Запись не найдена")
+    #             return render(request, "main/return_card.html", {"form": form})
+    #
+    # else:
+    #     form = ReturnCardHistory()
 
-        if form.is_valid():
-            # Получить данные из формы
-            teacher = form.cleaned_data["teacher"]
-            office = form.cleaned_data["office"]
-
-            # проверить, есть ли записи в таблице и выбрать последнюю
-            historys = CardHistory.objects.filter(
-                office=office, teacher=teacher, returned=False
-            )
-            history = historys.last()
-
-            if history:                
-
-                # Изменить данные в найденной записи
-                history.end_time = datetime.now()
-                history.returned = True
-
-                # Сохранить изменения
-                Office.objects.filter(office=office).update(busy=False)
-                history.save()
-
-                # Вернуть успешный результат
-                return redirect("index")
-
-            else:
-                form.add_error("office", "Запись не найдена")
-                return render(request, "main/return_card.html", {"form": form})
-
-    else:
-        form = ReturnCardHistory()
-    return render(request, "main/return_card.html", {"form": form})
+    office_card, teacher_card = arduino_reader()
+    office = Office.objects.get(card_number=office_card)
+    teacher = Teacher.objects.get(card_number=teacher_card)
+    office_name = Office.objects.filter(card_number=office_card).values('office')[0]['office']
+    teacher_name = Teacher.objects.filter(card_number=teacher_card).values('name')[0]['name']
+    CardHistory.objects.filter(office=office, teacher=teacher).update(returned=True)
+    return render(request, "main/return_card.html", {"my_arguments": (office_name, teacher_name)})
 
 
 def about(request):
