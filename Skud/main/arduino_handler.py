@@ -9,10 +9,8 @@ for port in ports:
         device = port.device
 try:
     arduino = serial.Serial(device, 9600)
-    print('Ардуино подключено')
 except Exception as ex:
     arduino = None
-    print('Ардуино не подключилось')
 
 # key_id = 25763
 # clef_id = 4294940973

@@ -31,7 +31,10 @@ def takeCard(request):
     #
     # else:
     #     form = AddCardHistory()
-    office_card, teacher_card = arduino_reader()
+    try:
+        office_card, teacher_card = arduino_reader()
+    except Exception as ex:
+        return render(request, "main/error_occured.html")
     office = Office.objects.get(card_number=office_card)
     teacher = Teacher.objects.get(card_number=teacher_card)
     office_name = Office.objects.filter(card_number=office_card).values('office')[0]['office']
@@ -76,8 +79,10 @@ def returnCards(request):
     #
     # else:
     #     form = ReturnCardHistory()
-
-    office_card, teacher_card = arduino_reader()
+    try:
+        office_card, teacher_card = arduino_reader()
+    except Exception as ex:
+        return render(request, "main/error_occured.html")
     office = Office.objects.get(card_number=office_card)
     teacher = Teacher.objects.get(card_number=teacher_card)
     office_name = Office.objects.filter(card_number=office_card).values('office')[0]['office']
